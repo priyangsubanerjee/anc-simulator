@@ -18,9 +18,9 @@ export default function Home() {
   const canvasRef = useRef(null);
 
   const [running, setRunning] = useState(false);
-  const [freq, setFreq] = useState(440);
+  const [freq, setFreq] = useState(100);
   const [phase, setPhase] = useState(110); // degrees
-  const [invert, setInvert] = useState(false); // negative gain inversion by default
+  const [invert, setInvert] = useState(false);
 
   useEffect(() => {
     audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
@@ -47,14 +47,12 @@ export default function Home() {
     analyser2.current.getFloatTimeDomainData(buf2);
     analyserSum.current.getFloatTimeDomainData(bufsum);
 
-    // center line
     ctx.strokeStyle = "#eee";
     ctx.beginPath();
     ctx.moveTo(0, H / 2);
     ctx.lineTo(W, H / 2);
     ctx.stroke();
 
-    // helper to plot
     const plot = (data, color) => {
       ctx.strokeStyle = color;
       ctx.lineWidth = 1.5;
@@ -68,7 +66,6 @@ export default function Home() {
       ctx.stroke();
     };
 
-    // inside draw()
     plot(bufsum, "#6b7280");      // gray, base layer
     plot(buf2, "#dc2626");        // red, middle
     plot(buf1, "#1d4ed8");        // blue, top
@@ -173,7 +170,6 @@ export default function Home() {
     }
   }, [freq, phase, running]);
 
-  // update invert live
   useEffect(() => {
     if (!running || !gain2.current || !audioCtx.current) return;
     gain2.current.gain.setValueAtTime(invert ? -1 : 1, audioCtx.current.currentTime);
@@ -181,7 +177,7 @@ export default function Home() {
 
 
   return (
-    <div className="bg-neutral-100 min-h-svh md:pt-20">
+    <div className="bg-neutral-100 min-h-svh md:pt-8">
       <div className="bg-white max-w-[550px] mx-auto p-5 md:p-8">
         <p className="text-xs font-mono tracking-[2px] text-center text-neutral-600">FOR EDUCATIONAL PURPOSE</p>
         <h1 className="text-xl md:text-2xl font-semibold text-center text-pretty mt-4">
@@ -242,92 +238,12 @@ export default function Home() {
           For reliable cancellation keep <b>Invert</b> checked (gain = -1) and phase ≈ 180°.
           Use headphones for best results.
         </p>
-
-        <div className="space-y-10 mt-10 text-sm leading-6">
-          <h1 className="text-lg font-medium underline">Noise Cancellation Demo - Scientific Explanation</h1>
-          <section>
-            <h2 className="text-xl font-medium">Sound Wave Representation</h2>
-            <p className="text-sm text-neutral-600 mt-1 mb-4">
-              Sound waves are oscillations of air pressure and can be modeled mathematically as sine waves:
-            </p>
-            <BlockMath math={'y(t) = A \\cdot \\sin(\\omega t + \\phi)'} />
-            <p>Where:</p>
-            <ul className="list-disc ml-6">
-              <li><InlineMath math={'y(t)'} /> = instantaneous amplitude at time <InlineMath math={'t'} /></li>
-              <li><InlineMath math={'A'} /> = amplitude (volume) of the wave</li>
-              <li><InlineMath math={'\\omega = 2\\pi f'} /> = angular frequency, <InlineMath math={'f'} /> is frequency in Hz</li>
-              <li><InlineMath math={'\\phi'} /> = phase of the wave in radians</li>
-            </ul>
-          </section>
-
-
-          <section>
-            <h2 className="text-xl font-medium">Superposition Principle</h2>
-            <p className="leading-6 mt-2 mb-4">When two waves meet, their amplitudes add algebraically:</p>
-            <BlockMath math={'y_{total}(t) = y_1(t) + y_2(t)'} />
-            <p>
-              If <InlineMath math={'y_1'} /> and <InlineMath math={'y_2'} /> are in phase (<InlineMath math={'\\phi_1 = \\phi_2'} />), they constructively interfere:
-            </p>
-            <BlockMath math={'y_{total}(t) = 2A \\sin(\\omega t)'} />
-            <p>
-              If they are 180° out of phase (<InlineMath math={'\\phi_2 = \\phi_1 + \\pi'} />), they destructively interfere, cancelling each other:
-            </p>
-            <BlockMath math={'y_{total}(t) = A \\sin(\\omega t) + (-A \\sin(\\omega t)) = 0'} />
-          </section>
-
-
-          <section>
-            <h2 className="text-xl font-medium">Phase Shift Calculation</h2>
-            <p className="leading-6 mt-2 mb-4">To shift a wave by a specific phase in degrees:</p>
-            <BlockMath math={'Delay = \\frac{Phase(\\degree)}{360} \\cdot T'} />
-            <p>
-              Where <InlineMath math={'T = 1/f'} /> is the wave period.
-            </p>
-            <p>
-              Example: For a 440 Hz wave (<InlineMath math={'T \\approx 0.00227'} /> s), a 180° phase shift:
-            </p>
-            <BlockMath math={'Delay = 0.5 \\cdot 0.00227 \\approx 0.001135 s'} />
-          </section>
-
-
-          <section>
-            <h2 className="text-xl font-medium">Inversion via Negative Gain</h2>
-            <p className="leading-6 mt-2 mb-4">
-              Instead of a delay, we can invert the wave using negative gain:
-            </p>
-            <BlockMath math={'y_2(t) = -y_1(t)'} />
-            <p>
-              Setting <InlineMath math={'gain.value = -1'} /> in Web Audio flips the wave, producing exact destructive interference when the phase offset is 180°.
-            </p>
-          </section>
-
-
-          <section>
-            <h2 className="text-xl font-medium">Combined Waveform</h2>
-            <p className="leading-6 mt-2 mb-4">
-              If we sum both waves:
-            </p>
-            <BlockMath math={'y_{sum}(t) = y_1(t) + y_2(t)'} />
-            <p>
-              For 180° phase difference & inversion:
-            </p>
-            <BlockMath math={'y_{sum}(t) = 0'} />
-            <p>
-              For other phase differences, partial cancellation occurs:
-            </p>
-            <BlockMath math={'y_{sum, max} = 2A \\cos(\\phi/2)'} />
-          </section>
-
-
-          <section>
-            <h2 className="text-xl font-medium">Key Notes</h2>
-            <ul className="list-disc ml-6">
-              <li>Cancellation works best at single frequencies (pure tones).</li>
-              <li>Real-world noise is broadband, so ANC systems require filtering and adaptive algorithms.</li>
-              <li>Room acoustics or headphone leakage can reduce the effectiveness of destructive interference.</li>
-            </ul>
-          </section>
-        </div>
+        <a href="https://en.wikipedia.org/wiki/Active_noise_control" className="flex gap-1 items-center text-sm mt-6 text-blue-600">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5" viewBox="0 0 512 512">
+            <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={32} d="M384 224v184a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V168a40 40 0 0 1 40-40h167.48M336 64h112v112M224 288L440 72"></path>
+          </svg>
+          <span>Learn more</span>
+        </a>
       </div>
     </div>
   );
