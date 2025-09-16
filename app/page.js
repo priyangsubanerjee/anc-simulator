@@ -229,13 +229,16 @@ export default function Home() {
           <div>
             <canvas ref={canvasRef}
               className="w-full mt-8 border border-neutral-300 rounded-xl" />
-            <ul className="list-disc pl-5 space-y-2 mt-6 text-sm">
-              <li>
-                Blue is the reference tone.
+            <ul className="space-y-2 mt-6 text-sm">
+              <li className="flex items-center gap-2">
+                <div className="h-3 w-3 bg-[#1d4ed8]"></div> Reference tone.
               </li>
-              <li>Red is the anti-noise
-                tone you&apos;re adjusting with phase and inversion.</li>
-              <li>Gray is the result, constructive or destructive interference between the two.</li>
+              <li className="flex items-center gap-2">
+                <div className="h-3 w-3 bg-[#dc2626]"></div> Anti-noise
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-3 w-3 bg-[#6b7280]"></div> Constructive or destructive interference between the two.
+              </li>
             </ul>
             <p className=" text-sm text-neutral-700 mt-5 leading-6">
               For reliable cancellation keep <b>Invert</b> checked (gain = -1) and phase ≈ 180°.
