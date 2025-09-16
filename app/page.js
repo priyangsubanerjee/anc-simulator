@@ -176,7 +176,7 @@ export default function Home() {
 
   return (
     <div className="bg-neutral-100 min-h-svh md:pt-8">
-      <div className="bg-white max-w-[950px] mx-auto p-5 md:p-8">
+      <div className="bg-white max-w-[1000px] mx-auto p-5 md:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-16">
           <div>
             <p className="text-xs font-mono tracking-[2px] text-center text-neutral-600">FOR EDUCATIONAL PURPOSE</p>
