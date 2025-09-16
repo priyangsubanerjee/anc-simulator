@@ -178,72 +178,90 @@ export default function Home() {
 
   return (
     <div className="bg-neutral-100 min-h-svh md:pt-8">
-      <div className="bg-white max-w-[550px] mx-auto p-5 md:p-8">
-        <p className="text-xs font-mono tracking-[2px] text-center text-neutral-600">FOR EDUCATIONAL PURPOSE</p>
-        <h1 className="text-xl md:text-2xl font-semibold text-center text-pretty mt-4">
-          Active Noise Cancellation Simulator
-        </h1>
-        <p className="text-sm text-neutral-700 mt-3 leading-[1.6]">
-          A browser-based interactive demo that visualizes how sound waves can cancel each other through phase inversion. Using the Web Audio API, two sine oscillators are generated with adjustable frequency, phase shift, and gain inversion.
-        </p>
-        <p className="text-xs leading-5 mt-5 text-neutral-500 italic border-l border-neutral-300 pl-4 py-2">
-          This is a simplified simulation of active noise cancellation using two oscillators. Real ANC systems use microphones and adaptive filtering.
-        </p>
-        <div className="grid grid-cols-2 gap-5 mt-8">
+      <div className="bg-white max-w-[950px] mx-auto p-5 md:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-16">
           <div>
-            <p className="font-medium text-sm">Frequency: {freq} Hz</p>
-            <input
-              type="range"
-              min="50"
-              max="1000"
-              value={freq}
-              className="w-full mt-3"
-              onChange={(e) => setFreq(Number(e.target.value))}
-            />
+            <p className="text-xs font-mono tracking-[2px] text-center text-neutral-600">FOR EDUCATIONAL PURPOSE</p>
+            <h1 className="text-xl md:text-2xl font-semibold text-center text-pretty mt-4">
+              Active Noise Cancellation Simulator
+            </h1>
+            <p className="text-sm text-neutral-700 mt-3 leading-[1.6]">
+              A browser-based interactive demo that visualizes how sound waves can cancel each other through phase inversion. Using the Web Audio API, two sine oscillators are generated with adjustable frequency, phase shift, and gain inversion.
+            </p>
+            <p className="text-xs leading-5 mt-5 text-neutral-500 italic border-l border-neutral-300 pl-4 py-2">
+              This is a simplified simulation of active noise cancellation using two oscillators. Real ANC systems use microphones and adaptive filtering.
+            </p>
+            <div className="grid grid-cols-2 gap-5 mt-8">
+              <div>
+                <p className="font-medium text-sm">Frequency: {freq} Hz</p>
+                <input
+                  type="range"
+                  min="50"
+                  max="1000"
+                  value={freq}
+                  className="w-full mt-3"
+                  onChange={(e) => setFreq(Number(e.target.value))}
+                />
+              </div>
+              <div>
+                <p className="text-sm font-medium">Phase angle: {phase}°</p>
+                <input
+                  type="range"
+                  min="0"
+                  max="360"
+                  value={phase}
+                  onChange={(e) => setPhase(Number(e.target.value))}
+                  className="w-full mt-3"
+                />
+              </div>
+            </div>
+            <div className="flex items-center mt-10">
+              <button onClick={() => {
+                if (running) stop(); else start();
+              }} className=" bg-neutral-900 text-white px-4 py-2 rounded-lg text-sm font-medium cursor-pointer">
+                {running ? "Stop simulation" : "Start simulation"}
+              </button>
+              <label className="flex items-center ml-auto gap-2">
+                <input type="checkbox" checked={invert} onChange={(e) => setInvert(e.target.checked)} />
+                <span className="text-sm text-neutral-700 select-none">Invert (negative gain)</span>
+              </label>
+            </div>
+
           </div>
           <div>
-            <p className="text-sm font-medium">Phase angle: {phase}°</p>
-            <input
-              type="range"
-              min="0"
-              max="360"
-              value={phase}
-              onChange={(e) => setPhase(Number(e.target.value))}
-              className="w-full mt-3"
-            />
+            <canvas ref={canvasRef}
+              className="w-full mt-8 border border-neutral-300 rounded-xl" />
+            <ul className="list-disc pl-5 space-y-2 mt-6 text-sm">
+              <li>
+                Blue is the reference tone.
+              </li>
+              <li>Red is the anti-noise
+                tone you&apos;re adjusting with phase and inversion.</li>
+              <li>Gray is the result, constructive or destructive interference between the two.</li>
+            </ul>
+            <p className=" text-sm text-neutral-700 mt-5 leading-6">
+              For reliable cancellation keep <b>Invert</b> checked (gain = -1) and phase ≈ 180°.
+              Use headphones for best results.
+            </p>
+            <a href="https://en.wikipedia.org/wiki/Active_noise_control" className="flex gap-1 items-center text-sm mt-6 text-blue-600">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={32} d="M384 224v184a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V168a40 40 0 0 1 40-40h167.48M336 64h112v112M224 288L440 72"></path>
+              </svg>
+              <span>Learn more about ANC</span>
+            </a>
           </div>
         </div>
-        <div className="flex items-center mt-10">
-          <button onClick={() => {
-            if (running) stop(); else start();
-          }} className=" bg-neutral-900 text-white px-4 py-2 rounded-lg text-sm font-medium cursor-pointer">
-            {running ? "Stop simulation" : "Start simulation"}
-          </button>
-          <label className="flex items-center ml-auto gap-2">
-            <input type="checkbox" checked={invert} onChange={(e) => setInvert(e.target.checked)} />
-            <span className="text-sm text-neutral-700 select-none">Invert (negative gain)</span>
-          </label>
+        <div className="mt-4">
+          <p className="text-sm text-neutral-600">This project is maintained by: <a className="text-blue-600" href="https://priyangsu.dev/">@priyangsubanerjee</a> </p>
+          <p className="text-sm text-neutral-600 mt-2">
+            <a className="text-blue-600 flex items-center gap-2" href="https://github.com/priyangsubanerjee/anc-simulator">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5" viewBox="0 0 512 512">
+                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={32} d="M384 224v184a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V168a40 40 0 0 1 40-40h167.48M336 64h112v112M224 288L440 72"></path>
+              </svg>
+              <span>Source code</span>
+            </a>
+          </p>
         </div>
-        <canvas ref={canvasRef}
-          className="w-full mt-8 border border-neutral-300 rounded-xl" />
-        <ul className="list-disc pl-5 space-y-2 mt-6 text-sm">
-          <li>
-            Blue is the reference tone.
-          </li>
-          <li>Red is the anti-noise
-            tone you&apos;re adjusting with phase and inversion.</li>
-          <li>Gray is the result, constructive or destructive interference between the two.</li>
-        </ul>
-        <p className=" text-sm text-neutral-700 mt-5 leading-6">
-          For reliable cancellation keep <b>Invert</b> checked (gain = -1) and phase ≈ 180°.
-          Use headphones for best results.
-        </p>
-        <a href="https://en.wikipedia.org/wiki/Active_noise_control" className="flex gap-1 items-center text-sm mt-6 text-blue-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5" viewBox="0 0 512 512">
-            <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={32} d="M384 224v184a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V168a40 40 0 0 1 40-40h167.48M336 64h112v112M224 288L440 72"></path>
-          </svg>
-          <span>Learn more</span>
-        </a>
       </div>
     </div>
   );
