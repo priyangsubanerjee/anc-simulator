@@ -1,7 +1,5 @@
 "use client";
-import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { BlockMath, InlineMath } from "react-katex";
 
 export default function Home() {
 
