@@ -16,7 +16,7 @@ export default function Home() {
   const canvasRef = useRef(null);
 
   const [running, setRunning] = useState(false);
-  const [freq, setFreq] = useState(100);
+  const [freq, setFreq] = useState(50);
   const [phase, setPhase] = useState(110); // degrees
   const [invert, setInvert] = useState(false);
 
@@ -194,8 +194,8 @@ export default function Home() {
                 <p className="font-medium text-sm">Frequency: {freq} Hz</p>
                 <input
                   type="range"
-                  min="50"
-                  max="1000"
+                  min="10"
+                  max="500"
                   value={freq}
                   className="w-full mt-3"
                   onChange={(e) => setFreq(Number(e.target.value))}
