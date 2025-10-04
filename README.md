@@ -19,8 +19,8 @@ A browser-based interactive demo that visualizes how **sound waves** can cancel 
 
 ### Live Demo
 
-You can try the **Device Fingerprint Generator** live at:  
-[View Live](https://priyangsubanerjee.github.io/device-fingerprinting/)
+You can try the **Noise Cancellation Simulator** live at:  
+[View Live](https://ancsimulator.priyangsu.dev/)
 
 ### Author
 
